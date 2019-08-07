@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog
+	xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd
+        http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+
+	<changeSet id="clog-000" author="son.truong">
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<tableExists tableName="gpx" />
+			</not>
+		</preConditions>
+		<createTable tableName="gpx_metadata">
+			<column name="id" type="bigint"></column>
+			<column name="name" type="varchar(255)"></column>
+			<column name="desc" type="CLOB"></column>
+			<column name="author" type="varchar(255)"></column>
+			<column name="link_href" type="varchar(255)"></column>
+			<column name="link_text" type="varchar(255)"></column>
+			<column name="time" type="datetime"></column>
+		</createTable>
+		<addNotNullConstraint tableName="gpx_metadata" columnName="id" columnDataType="bigint"/>
+		<addPrimaryKey tableName="gpx_metadata" columnNames="id"/>
+		<addAutoIncrement tableName="gpx_metadata" columnName="id" columnDataType="bigint"/>
+		
+		<createTable tableName="gpx">
+			<column name="id" type="bigint"></column>
+			<column name="filename" type="varchar(255)"></column>
+			<column name="file_data" type="CLOB"></column>
+			<column name="meta_id" type="bigint"></column>
+		</createTable>
+		<addNotNullConstraint tableName="gpx" columnName="id" columnDataType="bigint"/>
+		<addPrimaryKey tableName="gpx" columnNames="id"/>
+		<addAutoIncrement tableName="gpx" columnName="id" columnDataType="bigint"/>
+		<addForeignKeyConstraint constraintName="gpx_fk1" baseColumnNames="meta_id" baseTableName="gpx"  referencedTableName="gpx_metadata" referencedColumnNames="id"/>
+		
+		<createTable tableName="gpx_wpt">
+			<column name="gpx_id" type="bigint"></column>
+			<column name="name" type="varchar(255)"></column>
+			<column name="sym" type="varchar(255)"></column>
+			<column name="lat" type="double"></column>
+			<column name="lon" type="double"></column>
+		</createTable>
+		<addNotNullConstraint tableName="gpx_wpt" columnName="gpx_id" columnDataType="bigint"/>
+		<addForeignKeyConstraint constraintName="gpx_wpt_fk1" baseColumnNames="gpx_id" baseTableName="gpx_wpt"  referencedTableName="gpx" referencedColumnNames="id"/>
+	</changeSet>
+	
+	<changeSet id="clog-002" author="son.truong">
+		<createTable tableName="gpx_track">
+			<column name="gpx_id" type="bigint"></column>
+			<column name="ele" type="double"></column>
+			<column name="time" type="datetime"></column>
+			<column name="lat" type="double"></column>
+			<column name="lon" type="double"></column>
+		</createTable>
+		<addNotNullConstraint tableName="gpx_track" columnName="gpx_id" columnDataType="bigint"/>
+		<addForeignKeyConstraint constraintName="gpx_track_fk1" baseColumnNames="gpx_id" baseTableName="gpx_track"  referencedTableName="gpx" referencedColumnNames="id"/>
+	</changeSet>
+	<changeSet id="clog-003" author="son.truong">
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<tableExists tableName="gpx_track" />
+			</not>
+		</preConditions>
+		<renameTable newTableName="gpx_track_point" oldTableName="gpx_track"/>
+	</changeSet>
+	<changeSet id="clog-004" author="son.truong">
+		<dropColumn tableName="gpx_track_point" columnName="gpx_id"/>
+		<createTable tableName="gpx_track">
+			<column name="id" type="bigint"></column>
+			<column name="gpx_id" type="bigint"></column>
+			<column name="name" type="varchar(255)"></column>
+		</createTable>
+		<addNotNullConstraint tableName="gpx_track" columnName="id" columnDataType="bigint"/>
+		<addPrimaryKey tableName="gpx_track" columnNames="id"/>
+		<addAutoIncrement tableName="gpx_track" columnName="id" columnDataType="bigint"/>
+		<addNotNullConstraint tableName="gpx_track" columnName="gpx_id" columnDataType="bigint"/>
+		<addForeignKeyConstraint constraintName="gpx_trackn_fk1" baseColumnNames="gpx_id" baseTableName="gpx_track"  referencedTableName="gpx" referencedColumnNames="id"/>
+	</changeSet>
+	<changeSet id="clog-005" author="son.truong">
+		<createTable tableName="gpx_trackseg">
+			<column name="id" type="bigint"></column>
+			<column name="track_id" type="bigint"></column>
+			<column name="name" type="varchar(255)"></column>
+		</createTable>
+		<addNotNullConstraint tableName="gpx_trackseg" columnName="id" columnDataType="bigint"/>
+		<addPrimaryKey tableName="gpx_trackseg" columnNames="id"/>
+		<addAutoIncrement tableName="gpx_trackseg" columnName="id" columnDataType="bigint"/>
+		<addNotNullConstraint tableName="gpx_trackseg" columnName="track_id" columnDataType="bigint"/>
+		<addForeignKeyConstraint constraintName="gpx_trackseg_fk1" baseColumnNames="track_id" baseTableName="gpx_trackseg"  referencedTableName="gpx_track" referencedColumnNames="id"/>
+	</changeSet>
+	<changeSet id="clog-006" author="son.truong">
+		<addColumn tableName="gpx_track_point">
+			<column name="seg_id" type="bigint"></column>
+		</addColumn>
+	</changeSet>
+</databaseChangeLog>
