@@ -1,0 +1,19 @@
+spring.profiles.active: local
+
+spring:
+  jmx:
+    enabled: false
+  main:
+    allow-bean-definition-overriding: true
+  data:
+    mongodb:
+      authentication-database: # Authentication database name.
+      database: onelanguage # Database name.
+      field-naming-strategy: # Fully qualified name of the FieldNamingStrategy to use.
+      grid-fs-database: # GridFS database name.
+      host: localhost # Mongo server host.
+      password: Son198765432 # Login password of the mongo server.
+      #port: #27017 # Mongo server port.
+      #repositories.enabled: true # Enable Mongo repositories.
+      uri: mongodb+srv://appadmin:Son198765432@cluster0-ivyzt.mongodb.net/onelanguage?retryWrites=true&w=majority # Mongo database URI. When set, host and port are ignored.
+      username: appadmin # Login user of the mongo server.
