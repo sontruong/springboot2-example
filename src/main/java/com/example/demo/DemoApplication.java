@@ -8,7 +8,6 @@ import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.liquibase.LiquibaseProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -18,7 +17,7 @@ import liquibase.integration.spring.SpringLiquibase;
 @SpringBootApplication
 @EnableAutoConfiguration
 @EnableConfigurationProperties(LiquibaseProperties.class)
-public class DemoApplication extends SpringBootServletInitializer {
+public class DemoApplication {
 
 	@Autowired
 	LiquibaseProperties properties;
