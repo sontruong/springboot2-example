@@ -1,1 +1,4 @@
 .settings/
+jar-docker/target/
+cdn-demo/target/
+springboot-mongo/target/
