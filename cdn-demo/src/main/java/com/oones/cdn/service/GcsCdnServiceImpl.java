@@ -55,7 +55,7 @@ import com.oones.cdn.type.CdnAccessType;
 import com.oones.cdn.utils.DateUtils;
 
 @Service("")
-public class GcsCdnServiceImpl implements CdnService {
+public class GcsCdnServiceImpl implements CdnService<Blob> {
 
 	private static final Logger LOG = LoggerFactory.getLogger(GcsCdnServiceImpl.class);
 	public static final String ATTR_IDENTIFIER = "identifier";

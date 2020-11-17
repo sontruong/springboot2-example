@@ -15,12 +15,12 @@ import com.oones.cdn.dto.CdnResultDto;
 import com.oones.cdn.exception.NotFoundException;
 import com.oones.cdn.type.CdnAccessType;
 
-public interface CdnService {
+public interface CdnService<T> {
 
-	CdnResultDto addFile(MultipartFile file, String uploadPath, String username, CdnAccessType type, Acl... acls)
+	CdnResultDto<T> addFile(MultipartFile file, String uploadPath, String username, CdnAccessType type, Acl... acls)
 			throws IOException;
 
-	CdnResultDto addFile(File file, String uploadPath, String username, CdnAccessType type, Acl... acls)
+	CdnResultDto<T> addFile(File file, String uploadPath, String username, CdnAccessType type, Acl... acls)
 			throws IOException;
 
 	void addFolder(File folder, String uploadPath, String username, Map<Integer, String> storeMap, CdnAccessType type,
@@ -29,7 +29,7 @@ public interface CdnService {
 	Map<String, Blob> addFiles(String uploadPath, String username, Set<String> storeMap, CdnAccessType type,
 			Acl... acls) throws IOException;
 	
-	CdnResultDto getFile(String fileIdentifier) throws IOException, NotFoundException;
+	CdnResultDto<T> getFile(String fileIdentifier) throws IOException, NotFoundException;
 
 	Blob updatePermission(String src, CdnAccessType type, Acl acl) throws IOException;
 
