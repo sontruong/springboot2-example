@@ -48,14 +48,14 @@ import com.google.cloud.storage.Storage.PredefinedAcl;
 import com.google.cloud.storage.StorageClass;
 import com.google.cloud.storage.StorageException;
 import com.google.cloud.storage.StorageOptions;
-import com.oones.cdn.dto.GcsUploadResultDto;
+import com.oones.cdn.dto.GcsCdnResultDto;
 import com.oones.cdn.exception.ExistException;
 import com.oones.cdn.exception.NotFoundException;
 import com.oones.cdn.type.CdnAccessType;
 import com.oones.cdn.utils.DateUtils;
 
 @Service
-public class GcsAttachmentServiceImpl implements GcsAttachmentService {
+public class GcsAttachmentServiceImpl implements CdnService {
 
 	private static final Logger LOG = LoggerFactory.getLogger(GcsAttachmentServiceImpl.class);
 	public static final String ATTR_IDENTIFIER = "identifier";
@@ -87,19 +87,19 @@ public class GcsAttachmentServiceImpl implements GcsAttachmentService {
 	private Storage storageClient;
 
 	@Override
-	public GcsUploadResultDto addFile(MultipartFile file, String uploadPath, String username, CdnAccessType type, Acl... acls) throws IOException {
+	public GcsCdnResultDto addFile(MultipartFile file, String uploadPath, String username, CdnAccessType type, Acl... acls) throws IOException {
 		LOG.info("Uploading new file {} for entity {}, name {}", file, uploadPath);
 		String identifier = UUID.randomUUID().toString();
-		GcsUploadResultDto blob = insertIntoBucket(file.getInputStream(), file.getOriginalFilename(), uploadPath, identifier, username, type, acls);
+		GcsCdnResultDto blob = insertIntoBucket(file.getInputStream(), file.getOriginalFilename(), uploadPath, identifier, username, type, acls);
 		return blob;
 	}
 	
 	@Override
-	public GcsUploadResultDto addFile(File file, String uploadPath, String username, CdnAccessType type, Acl... acls) throws IOException {
+	public GcsCdnResultDto addFile(File file, String uploadPath, String username, CdnAccessType type, Acl... acls) throws IOException {
 		LOG.info("Uploading new file {} for entity {}, name {}", file, uploadPath);
 		String identifier = UUID.randomUUID().toString();
 		System.out.println("identifier: " + identifier);
-		GcsUploadResultDto blob = insertIntoBucket(new FileInputStream(file), file.getName(), uploadPath, identifier, username, type, acls);
+		GcsCdnResultDto blob = insertIntoBucket(new FileInputStream(file), file.getName(), uploadPath, identifier, username, type, acls);
 		return blob;
 	}
 	
@@ -126,7 +126,7 @@ public class GcsAttachmentServiceImpl implements GcsAttachmentService {
 			LOG.info("Uploading new file {} for entity {}, name {}", file, uploadPath);
 			String identifier = UUID.randomUUID().toString();
 			System.out.println("identifier: " + identifier);
-			GcsUploadResultDto resultDto = insertIntoBucket(new FileInputStream(file), file.getName(), uploadPath, identifier, username, type, acls);
+			GcsCdnResultDto resultDto = insertIntoBucket(new FileInputStream(file), file.getName(), uploadPath, identifier, username, type, acls);
 			Blob blob = resultDto.getBlob();
 			storeMap.put(file.getAbsolutePath().hashCode(), blob.getSelfLink());
 		}
@@ -147,7 +147,7 @@ public class GcsAttachmentServiceImpl implements GcsAttachmentService {
 			LOG.info("Uploading new file {} for entity {}, name {}", file, uploadPath);
 			String identifier = UUID.randomUUID().toString();
 			String uploadName = filePath.substring(filePath.indexOf("/" + uploadPath + "/") + 1);
-			GcsUploadResultDto resultDto = insertIntoBucket(new FileInputStream(file), uploadName, "", identifier, username, type, acls);
+			GcsCdnResultDto resultDto = insertIntoBucket(new FileInputStream(file), uploadName, "", identifier, username, type, acls);
 			Blob blob = resultDto.getBlob();
 			result.put(filePath, blob);
 		}
@@ -196,12 +196,12 @@ public class GcsAttachmentServiceImpl implements GcsAttachmentService {
 	}
 	
 	@Override
-	public GcsUploadResultDto getFile(String fileIdentifier) throws IOException, NotFoundException {
+	public GcsCdnResultDto getFile(String fileIdentifier) throws IOException, NotFoundException {
 		try {
 			LOG.info("Getting fileIdentifier {}", fileIdentifier);
 			initClient();
 			Blob blob = storageClient.get(bucketName, fileIdentifier);
-			GcsUploadResultDto result = new GcsUploadResultDto("");
+			GcsCdnResultDto result = new GcsCdnResultDto("");
 			result.setBlob(blob);
 			return result;
 		} catch (Exception e) {
@@ -259,7 +259,7 @@ public class GcsAttachmentServiceImpl implements GcsAttachmentService {
 		return builder.toUriString().replaceFirst("^/", "");
 	}
 
-	private GcsUploadResultDto insertIntoBucket(InputStream file, String fileName, String uploadPath, String identifier, String username, CdnAccessType type, Acl... acls)
+	private GcsCdnResultDto insertIntoBucket(InputStream file, String fileName, String uploadPath, String identifier, String username, CdnAccessType type, Acl... acls)
 			throws IOException {
 
 		initClient();
@@ -270,7 +270,7 @@ public class GcsAttachmentServiceImpl implements GcsAttachmentService {
 		metadata.put(ATTR_MODIFIED_ON, DateUtils.getDateFormat(new Date(), "yyyy-MM-dd hh:mm:ss"));
 		
 		String uri = buildUri(uploadPath, identifier);
-		GcsUploadResultDto result = new GcsUploadResultDto(uri);
+		GcsCdnResultDto result = new GcsCdnResultDto(uri);
 	    BlobId blobId = BlobId.of(bucketName, uri);
 	    
 	    Builder builder = BlobInfo.newBuilder(blobId).setMetadata(metadata);

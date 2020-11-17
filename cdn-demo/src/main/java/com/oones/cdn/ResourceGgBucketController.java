@@ -24,7 +24,7 @@ import com.google.cloud.storage.StorageClass;
 import com.oones.cdn.dto.GcsUploadResultDto;
 import com.oones.cdn.dto.SuccessMessage;
 import com.oones.cdn.dto.TextDTO;
-import com.oones.cdn.service.GcsAttachmentService;
+import com.oones.cdn.service.CdnService;
 import com.oones.cdn.service.GcsAttachmentServiceImpl;
 import com.oones.cdn.type.CdnAccessType;
 import com.oones.cdn.utils.FileUtils;
@@ -40,7 +40,7 @@ import io.swagger.annotations.Api;
 public class ResourceGgBucketController {
 
 	@Autowired
-	GcsAttachmentService gcsService;
+	CdnService gcsService;
 	
     /** constructor of UserResourceVersionController*/
     public ResourceGgBucketController(){
