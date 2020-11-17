@@ -8,8 +8,9 @@ package com.oones.cdn.dto;
  *
  *         Nov 9, 2020
  */
-public abstract class CdnResultDto {
+public class CdnResultDto<T> {
 	String uri;
+	T t;
 
 	public CdnResultDto(String uri) {
 		super();
@@ -22,4 +23,13 @@ public abstract class CdnResultDto {
 	public void setUri(String uri) {
 		this.uri = uri;
 	}
+
+	public T getT() {
+		return t;
+	}
+
+	public void setT(T t) {
+		this.t = t;
+	}
+
 }

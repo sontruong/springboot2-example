@@ -20,12 +20,13 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.google.cloud.storage.Acl;
+import com.google.cloud.storage.Blob;
 import com.google.cloud.storage.StorageClass;
-import com.oones.cdn.dto.GcsUploadResultDto;
+import com.oones.cdn.dto.CdnResultDto;
 import com.oones.cdn.dto.SuccessMessage;
 import com.oones.cdn.dto.TextDTO;
 import com.oones.cdn.service.CdnService;
-import com.oones.cdn.service.GcsAttachmentServiceImpl;
+import com.oones.cdn.service.GcsCdnServiceImpl;
 import com.oones.cdn.type.CdnAccessType;
 import com.oones.cdn.utils.FileUtils;
 
@@ -62,15 +63,15 @@ public class ResourceGgBucketController {
 	@RequestMapping(value = "resource/gcs/download", method = RequestMethod.POST, produces = AppConfig.APPLICATION_CONSUMES)
 	public @ResponseBody void download(HttpServletResponse response, @RequestParam String src) throws Exception {
 		try {
-			GcsUploadResultDto file = gcsService.getFile(src);
-			String fileName = file.getBlob().getMetadata().get(GcsAttachmentServiceImpl.ATTR_FILENAME);
+			CdnResultDto<Blob> file = gcsService.getFile(src);
+			String fileName = file.getT().getMetadata().get(GcsCdnServiceImpl.ATTR_FILENAME);
 			response.setHeader("Content-disposition", "attachment; filename=" + fileName);
 			if (null != FileUtils.getMimeType(fileName)) {
 				response.setContentType(FileUtils.getMimeType(fileName));
 			} else {
 				response.setContentType(AppConfig.APPLICATION_CONTENT_TYPES);
 			}
-			response.getOutputStream().write(file.getBlob().getContent());
+			response.getOutputStream().write(file.getT().getContent());
 			response.getOutputStream().flush();
 		} catch (IOException e) {
 			e.printStackTrace();

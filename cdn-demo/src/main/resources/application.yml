@@ -7,9 +7,9 @@ spring:
     allow-bean-definition-overriding: true
 cdn:
     gcs:
-       appName: <please input your appname here>
-       appId: <please input your appid - project id - here>
-       bucket: <please input your bucket here>
-       rootPath: <please input root path of your objects here>
-       serviceAccountEmail: <please input your google service account here>
-       serviceAccountPrivateKey: <please input your private key json file here>
+       appName: OneDev
+       appId: onedev-271406
+       bucket: onedevtest
+       rootPath: local
+       serviceAccountEmail: ondevservice@onedev-271406.iam.gserviceaccount.com
+       serviceAccountPrivateKey: onedev-271406-a388fa48a116.json
