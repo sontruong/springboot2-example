@@ -336,23 +336,6 @@ public class DateUtils {
 		return false;
 	}
 	
-	public static boolean isFirstDayOfYear(Date date) {
-		if (date.getDate() != 1) {
-			return false;
-		}
-		if (get(Calendar.MONTH, date) == 0) {
-			return true;
-		}
-		return false;
-	}
-
-	public static boolean isFirstDayOfMonth(Date date) {
-		if (date.getDate() == 1) {
-			return true;
-		}
-		return false;
-	}
-	
 	/**
 	 * @param date
 	 * @return true if this date is Sunday
