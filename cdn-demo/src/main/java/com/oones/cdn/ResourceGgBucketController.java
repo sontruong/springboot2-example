@@ -9,6 +9,7 @@ import java.util.Collection;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -41,7 +42,8 @@ import io.swagger.annotations.Api;
 public class ResourceGgBucketController {
 
 	@Autowired
-	CdnService gcsService;
+	@Qualifier(value = "gcsCdnService")
+	CdnService<Blob> gcsCdnService;
 	
     /** constructor of UserResourceVersionController*/
     public ResourceGgBucketController(){
@@ -50,20 +52,20 @@ public class ResourceGgBucketController {
     
 	@RequestMapping(value = "resource/gcs", method = RequestMethod.GET, produces = AppConfig.APPLICATION_CONSUMES)
 	public @ResponseBody ResponseEntity<Collection<String>> getList(@RequestParam String prefix) throws Exception {
-		return new ResponseEntity<Collection<String>>(gcsService.getFileList(prefix), HttpStatus.OK);
+		return new ResponseEntity<Collection<String>>(gcsCdnService.getFileList(prefix), HttpStatus.OK);
 	}
 	
 	@RequestMapping(value = "resource/gcs", method = RequestMethod.POST, produces = AppConfig.APPLICATION_CONSUMES)
-	public @ResponseBody ResponseEntity<TextDTO> add(@RequestParam("file") MultipartFile file) throws Exception {
+	public @ResponseBody ResponseEntity<TextDTO> addFile(@RequestParam("file") MultipartFile file) throws Exception {
 		TextDTO dto = new TextDTO();
-		dto.setTxt(gcsService.addFile(file, "test", "vinhson", CdnAccessType.PUBLIC_READ).getUri());
+		dto.setTxt(gcsCdnService.addFile(file, "test", "vinhson", CdnAccessType.PUBLIC_READ).getUri());
 		return new ResponseEntity<TextDTO>(dto, HttpStatus.OK);
 	}
 	
 	@RequestMapping(value = "resource/gcs/download", method = RequestMethod.POST, produces = AppConfig.APPLICATION_CONSUMES)
 	public @ResponseBody void download(HttpServletResponse response, @RequestParam String src) throws Exception {
 		try {
-			CdnResultDto<Blob> file = gcsService.getFile(src);
+			CdnResultDto<Blob> file = gcsCdnService.getFile(src);
 			String fileName = file.getT().getMetadata().get(GcsCdnServiceImpl.ATTR_FILENAME);
 			response.setHeader("Content-disposition", "attachment; filename=" + fileName);
 			if (null != FileUtils.getMimeType(fileName)) {
@@ -81,7 +83,7 @@ public class ResourceGgBucketController {
 	@RequestMapping(value = "resource/gcs/delete", method = RequestMethod.DELETE, produces = AppConfig.APPLICATION_CONSUMES)
 	public @ResponseBody ResponseEntity<SuccessMessage>  delete(HttpServletResponse response, @RequestParam String src) throws Exception {
 		try {
-			gcsService.deleteFile(src);
+			gcsCdnService.deleteFile(src);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -92,7 +94,7 @@ public class ResourceGgBucketController {
 	public @ResponseBody ResponseEntity<TextDTO> copy(@RequestHeader(required=false) String authorization, 
 																		@RequestParam String src, @RequestParam String des) throws Exception {
 		TextDTO dto = new TextDTO();
-		dto.setTxt(gcsService.copyFile(src, des).getMediaLink());
+		dto.setTxt(gcsCdnService.copyFile(src, des).getMediaLink());
 		return new ResponseEntity<TextDTO>(dto, HttpStatus.OK);
 	}
 	
@@ -100,27 +102,27 @@ public class ResourceGgBucketController {
 	public @ResponseBody ResponseEntity<TextDTO> updatePermission(@RequestParam String src, 
 			@RequestParam CdnAccessType accessType, @RequestParam(required = false) Acl acl) throws Exception {
 		TextDTO dto = new TextDTO();
-		dto.setTxt(gcsService.updatePermission(src, accessType, acl).getMediaLink());
+		dto.setTxt(gcsCdnService.updatePermission(src, accessType, acl).getMediaLink());
 		return new ResponseEntity<TextDTO>(dto, HttpStatus.OK);
 	}
 	
 	@RequestMapping(value = "resource/gcs/bucket", method = RequestMethod.POST, produces = AppConfig.APPLICATION_CONSUMES)
 	public @ResponseBody ResponseEntity<SuccessMessage> createBucket(HttpServletResponse response,
 			@RequestParam String bucketName, @RequestParam String location, @RequestParam StorageClass storageClass) throws Exception {
-		gcsService.createBucket(bucketName, location, storageClass);
+		gcsCdnService.createBucket(bucketName, location, storageClass);
 		return new ResponseEntity<SuccessMessage>(new SuccessMessage(), HttpStatus.OK);
 	}
 	
 	@RequestMapping(value = "resource/gcs/bucket", method = RequestMethod.DELETE, produces = AppConfig.APPLICATION_CONSUMES)
 	public @ResponseBody ResponseEntity<SuccessMessage> deleteBucket(HttpServletResponse response,
 			@RequestParam String bucketName) throws Exception {
-		gcsService.deleteBucket(bucketName);
+		gcsCdnService.deleteBucket(bucketName);
 		return new ResponseEntity<SuccessMessage>(new SuccessMessage(), HttpStatus.OK);
 	}
 	
 	@RequestMapping(value = "resource/gcs/bucket/ttl", method = RequestMethod.PUT, produces = AppConfig.APPLICATION_CONSUMES)
 	public @ResponseBody ResponseEntity<SuccessMessage> setTTL(HttpServletResponse response, @RequestParam String bucketName, @RequestParam Long timeToLive) throws Exception {
-		gcsService.updateRetentionPolicy(bucketName, timeToLive);
+		gcsCdnService.updateRetentionPolicy(bucketName, timeToLive);
 		return new ResponseEntity<SuccessMessage>(new SuccessMessage(), HttpStatus.OK);
 	}
 }

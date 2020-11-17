@@ -14,6 +14,7 @@ public class CdnResultDto<T> {
 
 	public CdnResultDto(String uri) {
 		super();
+		this.uri = uri;
 	}
 
 	public String getUri() {

@@ -54,7 +54,7 @@ import com.oones.cdn.exception.NotFoundException;
 import com.oones.cdn.type.CdnAccessType;
 import com.oones.cdn.utils.DateUtils;
 
-@Service("")
+@Service("gcsCdnService")
 public class GcsCdnServiceImpl implements CdnService<Blob> {
 
 	private static final Logger LOG = LoggerFactory.getLogger(GcsCdnServiceImpl.class);
