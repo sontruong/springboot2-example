@@ -1,0 +1,9 @@
+server:
+  port: 8443
+  http2.enabled: true
+  ssl:
+    enabled: true
+    key-store-type: PKCS12
+    key-store: classpath:demo.p12 # The path to the keystore containing the certificate
+    key-store-password: 123456 # The password used to generate the certificate
+    key-alias: local # The alias mapped to the certificate
