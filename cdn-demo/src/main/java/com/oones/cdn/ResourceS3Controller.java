@@ -37,16 +37,16 @@ import io.swagger.annotations.Api;
  * @author son.truong
  */
 @Controller
-@Api(value = "", tags = "Google bucket controller")
+@Api(value = "", tags = "S3 controller")
 @RequestMapping(value = "api")
-public class ResourceGgBucketController {
+public class ResourceS3Controller {
 
 	@Autowired
 	@Qualifier(value = "gcsCdnService")
 	CdnService<Blob> gcsCdnService;
 	
     /** constructor of UserResourceVersionController*/
-    public ResourceGgBucketController(){
+    public ResourceS3Controller(){
         super();
     }
     
