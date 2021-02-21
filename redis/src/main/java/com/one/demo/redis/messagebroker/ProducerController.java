@@ -14,7 +14,7 @@ import redis.clients.jedis.Jedis;
 @RequestMapping(value = "api")
 public class ProducerController {
 	@RequestMapping(value = "push_message", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
-    public String saveDetail(@RequestParam String queue, @RequestParam String msg) {
+    public String saveDetail(@RequestParam(defaultValue = "queue") String queue, @RequestParam String msg) {
 		
 		Jedis jedis = null;
 		try {
